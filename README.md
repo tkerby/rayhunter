@@ -29,6 +29,9 @@ or on [Ebay](https://www.ebay.com/sch/i.html?_nkw=orbic+rc400l).
   * The install script also won't work on older macs with intel chips, for those macs you will need to follow the instructions at https://github.com/EFForg/rayhunter/wiki/Install-Rayhunter-on-Mac-Intel-devices
   * We don't currently support automated installs on windows, you will have to follow the manual install instructions below*
 
+## Updating
+Great news: if you've successfully installed rayhunter, you already know how to update it! Our update process is identical to the setup process: simply download the latest release and follow the steps in the [setup section](#Setup).
+
 
 ## Usage
 
@@ -41,17 +44,23 @@ Once installed, Rayhunter will run automatically whenever your Orbic device is r
 ## Frequently Asked Questions
 
 ### Do I need an active SIM card to use Rayhunter?
- **It Depends**. Operation of Rayhunter does require the insertion of a SIM card into the device, but whether that SIM card has to be currently active for our tests to work is still under investigation. If you want to use the device as a hotspot in addition to a research device an active plan would of course be necessary, however we have not done enough testing yet to know whether an active subscription is required for detection. If you want to test the device with an inactive SIM card, we would certainly be interested in seeing any data you collect, and especially any runs that trigger an alert!
+**It Depends**. Operation of Rayhunter does require the insertion of a SIM card into the device, but whether that SIM card has to be currently active for our tests to work is still under investigation. If you want to use the device as a hotspot in addition to a research device an active plan would of course be necessary, however we have not done enough testing yet to know whether an active subscription is required for detection. If you want to test the device with an inactive SIM card, we would certainly be interested in seeing any data you collect, and especially any runs that trigger an alert!
 ### Help, Rayhunter's line is red! What should I do?
- Unfortunately, the circumstances that might lead to a positive CSS signal are quite varied, so we don't have a universal recommendation for how to deal with the a positive signal. You might also want to turn off your phone until you are out of the area (or put it on airplane mode,) and tell your friends to do the same!
+Unfortunately, the circumstances that might lead to a positive CSS signal are quite varied, so we don't have a universal recommendation for how to deal with the a positive signal. Depending on your circumstances and threat model, you may want to turn off your phone until you are out of the area (or put it on airplane mode) and tell your friends to do the same!
 
- Please feel free to contact an EFF technologist with more information & a copy of the QMDL in question at [info@eff.org](mailto:info@eff.org). Please note that this file may contain sensetive information such as your IMSI and the unique IDs of cell towers you were near which could be used to ascertain your location at the time. We encourage you to use PGP encryption when sending your message. You can find the [PGP public key for info@eff.org here](https://www.eff.org/about/contact#main-content).
+If you've received a Rayhunter warning and would like to help us with our research, please send your Rayhunter data captures (QMDL and PCAP logs) to us at our [Signal](https://signal.org/) username [**ElectronicFrontierFoundation.90**](https://signal.me/#eu/HZbPPED5LyMkbTxJsG2PtWc2TXxPUR1OxBMcJGLOPeeCDGPuaTpOi5cfGRY6RrGf) with the following information: capture date, capture location, device, device model, and Rayhunter version. If you're unfamiliar with Signal, feel free to check out our [Security Self Defense guide on it](https://ssd.eff.org/module/how-to-use-signal).
+ 
+Please note that this file may contain sensitive information such as your IMSI and the unique IDs of cell towers you were near which could be used to ascertain your location at the time.
+
 ### Does Rayhunter work outside of the US?
 **Probably**. Some Rayhunter users have reported successfully using it in other countries with unlocked devices and SIM cards from local telcos. We can't guarantee whether or not it will work for you though.
 ### Should I get a locked or unlocked orbic device? What is the difference?
 If you want to use a non verizon SIM card you will probably need an unlocked device. But it's not clear how locked the locked devices are nor how to unlock them, we welcome any experimentation and information regarding the use of unlocked devices.
 ### Does Rayhunter work on any other devices besides the Orbic RC400L?
 **Maybe**. We have not tested Rayhunter on any other hardware but we would love to expand the supported platforms. We will consider giving official support to any hardware platform that can be bought for around $20-30USD. The Rayhunter daemon should theoretically work on any linux/android device that has a qualcomm chip with a /dev/diag interface and root access, though our installer script has only been tested with an Orbic. If you get it working on another device, please let us know!
+### How do I delete capture files from the Rayhunter device?
+You can get a shell on the device by inputting `adb shell` to a terminal with the device connected, you can check if it is detected with `adb devices`.
+The capture files are located at */data/rayhunter/qmdl* but you will need root access to modify or delete them. From the adb shell run `/bin/rootshell` and you can now use commands like 'rm' as root to modify and delete entries in the */data/rayhunter/qmdl* directory. **Be careful not to delete important files in other directories as you may seriously damage the device**.
 
 ## Development
 * Install ADB on your computer using the instructions above, and make sure it's in your terminal's PATH

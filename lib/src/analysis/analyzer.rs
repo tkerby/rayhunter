@@ -10,7 +10,6 @@ use super::{
     information_element::InformationElement,
     connection_redirect_downgrade::ConnectionRedirect2GDowngradeAnalyzer,
     priority_2g_downgrade::LteSib6And7DowngradeAnalyzer,
-    null_cipher::NullCipherAnalyzer,
 };
 
 /// Qualitative measure of how severe a Warning event type is.
@@ -111,6 +110,12 @@ pub struct Harness {
     analyzers: Vec<Box<dyn Analyzer + Send>>,
 }
 
+impl Default for Harness {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Harness {
     pub fn new() -> Self {
         Self { analyzers: Vec::new() }
@@ -121,7 +126,11 @@ impl Harness {
         harness.add_analyzer(Box::new(ImsiRequestedAnalyzer::new()));
         harness.add_analyzer(Box::new(ConnectionRedirect2GDowngradeAnalyzer{}));
         harness.add_analyzer(Box::new(LteSib6And7DowngradeAnalyzer{}));
-        harness.add_analyzer(Box::new(NullCipherAnalyzer{}));
+
+        // FIXME: our RRC parser is reporting false positives for this due to an
+        // upstream hampi bug (https://github.com/ystero-dev/hampi/issues/133).
+        // once that's fixed, we should regenerate our parser and re-enable this
+        // harness.add_analyzer(Box::new(NullCipherAnalyzer{}));
 
         harness
     }
