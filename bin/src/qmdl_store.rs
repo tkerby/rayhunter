@@ -156,17 +156,11 @@ impl RecordingStore {
         }
         let new_entry = ManifestEntry::new();
         let qmdl_filepath = new_entry.get_qmdl_filepath(&self.path);
-        let qmdl_file = File::options()
-            .create(true)
-            .write(true)
-            .open(&qmdl_filepath)
+        let qmdl_file = File::create(&qmdl_filepath)
             .await
             .map_err(RecordingStoreError::CreateFileError)?;
         let analysis_filepath = new_entry.get_analysis_filepath(&self.path);
-        let analysis_file = File::options()
-            .create(true)
-            .write(true)
-            .open(&analysis_filepath)
+        let analysis_file = File::create(&analysis_filepath)
             .await
             .map_err(RecordingStoreError::CreateFileError)?;
         self.manifest.entries.push(new_entry);
@@ -327,6 +321,20 @@ mod tests {
             store.close_current_entry().await,
             Err(RecordingStoreError::NoCurrentEntry)
         ));
+    }
+
+    #[tokio::test]
+    async fn test_create_on_existing_store() {
+        let dir = make_temp_dir();
+        let mut store = RecordingStore::create(dir.path()).await.unwrap();
+        let _ = store.new_entry().await.unwrap();
+        let entry_index = store.current_entry.unwrap();
+        store
+            .update_entry_qmdl_size(entry_index, 1000)
+            .await
+            .unwrap();
+        let store = RecordingStore::create(dir.path()).await.unwrap();
+        assert_eq!(store.manifest.entries.len(), 0);
     }
 
     #[tokio::test]

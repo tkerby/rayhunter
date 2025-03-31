@@ -9,6 +9,12 @@ pub struct ImsiRequestedAnalyzer {
     packet_num: usize,
 }
 
+impl Default for ImsiRequestedAnalyzer {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ImsiRequestedAnalyzer {
     pub fn new() -> Self {
         Self { packet_num: 0 }
@@ -26,8 +32,12 @@ impl Analyzer for ImsiRequestedAnalyzer {
 
     fn analyze_information_element(&mut self, ie: &InformationElement) -> Option<Event> {
         self.packet_num += 1;
-        let InformationElement::LTE(LteInformationElement::NAS(payload)) = ie else {
-            return None;
+        let payload = match ie {
+            InformationElement::LTE(inner) => match &**inner {
+                LteInformationElement::NAS(payload) => payload,
+                _ => return None,
+            }
+            _ => return None,
         };
 
         // NAS identity request, ID type IMSI
